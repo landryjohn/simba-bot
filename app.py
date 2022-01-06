@@ -1,6 +1,6 @@
 import requests, pyttsx3, speech_recognition as sr
 
-import utils 
+import utils, os
 from random import choice
 from decouple import config
 from functions import api
@@ -69,7 +69,21 @@ def listen_to_user_input() -> str :
     return query
 
 if __name__ == '__main__' :
-    # api.auth_user()
+    output = os.system("cls")
+    count = 0 
+    Authenticated = False 
+    while not Authenticated : 
+        access_key = input("Saisir la clé d'accès : ")
+        Authenticated = access_key == config("ACCESS_KEY")
+        if not Authenticated : 
+            print("Clé d'authentifcation incorrecte")
+            count += 1 
+        if count > 3 : 
+            print("Echec de l'authentification")
+            exit()
+    print(f"Bienvenue dans votre sessions {config('USER_NAME')}")
+    exit()
+    api.auth_user()
 
     # greet_user()
     # query = listen_to_user_input()
