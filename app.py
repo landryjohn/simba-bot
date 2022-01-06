@@ -98,22 +98,28 @@ if __name__ == '__main__' :
         if query == "" : continue 
         intents = brain.class_prediction(query.lower(), brain.words, brain.classes)
         intent = brain.get_intent(intents, brain.data)
-        print(intent)
+        # print(intent)
         if intent["tag"] == 'grettings' : 
-            print("yom")
             say_random_answer(intent)
+            speak("Comment puis-je vous aider ?")
         elif intent["tag"] == 'services_status' :
             say_random_answer(intent)
+            # show_services_status
         elif intent["tag"] == 'signature_database' : 
             say_random_answer(intent) 
+            # get_signature_database
         elif intent["tag"] == 'simba_rules' :
             say_random_answer(intent) 
+            # show_simba_rules
         elif intent["tag"] == 'intrusion_report' : 
             say_random_answer(intent)  
+            # get_intrusion_report
         elif intent["tag"] == 'send_intrusion_report' : 
-            say_random_answer(intent)  
+            say_random_answer(intent)
+            # get_intrusion_report 
         elif intent["tag"] == 'block_user_rule' : 
-            say_random_answer(intent)  
+            say_random_answer(intent)
+              
         elif intent["tag"] == 'add_rule' : 
             say_random_answer(intent)  
         elif intent["tag"] == 'firewall' : 
@@ -125,6 +131,3 @@ if __name__ == '__main__' :
         elif intent["tag"] == 'stop_simba_client' : 
             speak('Au revoir')
             exit()
-
-        # resp = api.post("api/system_call/", {'method':'get_intrusion_report'})
-        # print(resp.json()['message'])
