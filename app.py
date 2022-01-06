@@ -63,10 +63,13 @@ def listen_to_user_input() -> str :
             speak(choice(utils.opening_text))
             
     except Exception:
-        speak('Désolé, Je ne comprend pas. Pouvez vous repérer ?')
+        speak('Désolé, Je ne comprend pas. Pouvez vous repété ?')
         query = 'None'
     
     return query
+
+def say_random_answer(intent): 
+    speak(choice(intent["responses"]))
 
 if __name__ == '__main__' :
     output = os.system("cls")
@@ -82,19 +85,46 @@ if __name__ == '__main__' :
             print("Echec de l'authentification")
             exit()
     print(f"Bienvenue dans votre sessions {config('USER_NAME')}")
-    exit()
-    api.auth_user()
+    try :
+        api.auth_user()
+    except Exception as error:
+        print(error)
 
-    # greet_user()
-    # query = listen_to_user_input()
-    # print(query)
-    # speak(f'Votre requêtes est : {query}')
-    # speak('Voici le rapport d\'intrusions le plus à jour dans le réseau 192.168.8.0/24.')
-    # resp = api.post("api/system_call/", {'method':'get_intrusion_report'})
-    # print(resp.json()['message'])
-    # input()
-    while True:
-        message = input("")
-        intents = brain.class_predication(message.lower(), brain.words, brain.classes)
-        result = choice(brain.get_intent(intents, brain.data)["responses"])
-        print(result)
+    greet_user()
+    
+    while True :
+        query = listen_to_user_input()
+        print("Utilisateur :", query)
+        if query == "" : continue 
+        intents = brain.class_predication(query.lower(), brain.words, brain.classes)
+        intent = brain.get_intent(intents, brain.data)
+        print(intent)
+        if intent["tag"] == 'grettings' : 
+            print("yom")
+            say_random_answer(intent)
+        elif intent["tag"] == 'services_status' :
+            say_random_answer(intent)
+        elif intent["tag"] == 'signature_database' : 
+            say_random_answer(intent) 
+        elif intent["tag"] == 'simba_rules' :
+            say_random_answer(intent) 
+        elif intent["tag"] == 'intrusion_report' : 
+            say_random_answer(intent)  
+        elif intent["tag"] == 'send_intrusion_report' : 
+            say_random_answer(intent)  
+        elif intent["tag"] == 'block_user_rule' : 
+            say_random_answer(intent)  
+        elif intent["tag"] == 'add_rule' : 
+            say_random_answer(intent)  
+        elif intent["tag"] == 'firewall' : 
+            say_random_answer(intent)  
+        elif intent["tag"] == 'red_code' : 
+            say_random_answer(intent)  
+        elif intent["tag"] == 'ssh_connections' : 
+            say_random_answer(intent)  
+        elif intent["tag"] == 'stop_simba_client' : 
+            speak('Au revoir')
+            exit()
+
+        # resp = api.post("api/system_call/", {'method':'get_intrusion_report'})
+        # print(resp.json()['message'])
