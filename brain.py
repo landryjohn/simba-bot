@@ -79,7 +79,7 @@ data = {
             "responses" : ["blocage d'une utilisateur"]
         },
         {
-            "tag" : "ajouter un règle", 
+            "tag" : "add_rule", 
             "patterns" : ["ajouter une règle", "définir une règle","ajout d'une règle", 
                         "ajoute une règle", "je veux ajouter une règle", "je veux modifier les règles"], 
             "responses" : ["Ajout d'une règle"]
@@ -104,7 +104,8 @@ data = {
                     "connexion SSH"],
             "responses": ["Voici la liste des dernière connexions SSH"]
         },
-        {"tag": "goodbye",
+        {
+            "tag": "stop_simba_client",
             "patterns": ["Au revoir", "A plus", "Bye", "Stop", "cya", "Au revoir"],
             "responses": ["C'était sympa de vous parler", "à plus tard", "A plus!"]
         }
@@ -131,6 +132,50 @@ words = [lemmatizer.lemmatize(word.lower())
 # set pour s'assurer qu'il n'y a pas de doublons
 words = sorted(set(words))
 classes = sorted(set(classes))
+"""
+def train_model() -> None:
+    # liste pour les données d'entraînement
+    training = []
+    out_empty = [0] * len(classes)
+    # création du modèle d'ensemble de mots
+    for idx, doc in enumerate(doc_X):
+        bow = []
+        text = lemmatizer.lemmatize(doc.lower())
+        for word in words:
+            bow.append(1) if word in text else bow.append(0)
+        # marque l'index de la classe à laquelle le pattern atguel est associé à
+        output_row = list(out_empty)
+        output_row[classes.index(doc_y[idx])] = 1
+        # ajoute le one hot encoded BoW et les classes associées à la liste training
+        training.append([bow, output_row])
+    # mélanger les données et les convertir en array
+    random.shuffle(training)
+    training = np.array(training, dtype=object)
+    # séparer les features et les labels target
+    train_X = np.array(list(training[:, 0]))
+    train_y = np.array(list(training[:, 1]))
+
+    # définition de quelques paramètres
+    input_shape = (len(train_X[0]),)
+    output_shape = len(train_y[0])
+    epochs = 200
+
+    # modèle Deep Learning
+    model = Sequential()
+    model.add(Dense(128, input_shape=input_shape, activation="relu"))
+    model.add(Dropout(0.5))
+    model.add(Dense(64, activation="relu"))
+    model.add(Dropout(0.3))
+    model.add(Dense(output_shape, activation="softmax"))
+    adam = tf.keras.optimizers.Adam(learning_rate=0.01, decay=1e-6)
+    model.compile(loss='categorical_crossentropy',
+                optimizer=adam, metrics=["accuracy"])
+
+    model.fit(x=train_X, y=train_y, epochs=200, verbose=1)
+
+    model.save('simba_model.hdf5')
+    # del model 
+"""
 
 model = load_model('simba_model.hdf5')
 
@@ -172,6 +217,7 @@ def get_intent(intents_list, json_intents):
 
 # lancement de l'agent
 if __name__ == '__main__' : 
+    print("Ready !")
     while True:
         message = input("")
         intents = class_predication(message.lower(), words, classes)
