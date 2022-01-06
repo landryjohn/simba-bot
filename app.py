@@ -1,37 +1,86 @@
-import requests 
+import requests, pyttsx3, speech_recognition as sr
 
-TOKEN = None
-USERNAME = 'simba_api'
-PASSWORD = 's1mb@1234'
-BASE_URL = 'http://192.168.8.5:9000/api'
+import utils 
+from random import choice
+from decouple import config
+from functions import api
+from datetime import datetime
+import brain
 
-def get_user_token(username, password):
-    global TOKEN
-    payload = {'username':username, 'password':password}
-    res = requests.post('http://192.168.8.5:9000/api-token-auth/', payload)
-    return res.json()['token']
+USERNAME = config('USER_NAME')
+BOTNAME = config('BOTNAME')
 
-def auth_user():
-    global TOKEN, USERNAME, PASSWORD
-    if not TOKEN :  
-        TOKEN = get_user_token(USERNAME, PASSWORD)
+# set the TTS engine
+engine = pyttsx3.init('sapi5')
 
-def api_get(resource):
-    global TOKEN
-    auth_user()
-    return requests.get(f'{BASE_URL}/{resource}', headers={'Authorization': f'Token {TOKEN}'})
+# Set the rate of the assistant
+engine.setProperty('rate', 170)
 
-def api_post(resource, payload):
-    global TOKEN
-    auth_user()
-    return requests.post(
-        f'{BASE_URL}/{resource}',
-        data=payload, 
-        headers={'Authorization': f'Token {TOKEN}'}
-    )
+# Set the volume of the assistant
+engine.setProperty('volume', 1.0)
+
+# Set the voice of the assistant (Male) 
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[0].id)
+
+api.USER_API_USERNAME = config('API_USERNAME')
+api.USER_API_PASSWORD = config('API_PASSWORD')
+api.BASE_URL = config('BASE_URL')
+
+def speak(text:str) -> None :
+    """Write the text passed in parameter"""
+    print(f"🤖 {BOTNAME} parle...")
+    engine.say(text)
+    engine.runAndWait()
+
+def greet_user() -> None:
+    """Greets the user according to the time"""
+
+    hour = datetime.now().hour
+    if 12 <= hour < 16 :
+        speak(f"Bon après-midi {USERNAME}")
+    elif 16 <= hour < 19:
+        speak(f"Good Evening {USERNAME}") 
+    else :
+        speak(f"Bonjour {USERNAME}")
+    speak(f"Je suis {BOTNAME}. Comment puis-je vous aider")
+
+def listen_to_user_input() -> str : 
+    """Listen to user, make STT conversion using SAPI5"""
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        print('👂 En écoute...')
+        r.pause_threshold = 2
+        audio = r.listen(source)
+
+    try:
+        print('🤖 Traitement...')
+        query = r.recognize_google(audio, language='fr-FR')
+        if any([el in query for el in ['arrêter', 'sortir', 'arrêt', 'fin', 'terminer']]):
+            speak('Au revoir')
+            exit()
+        else : 
+            speak(choice(utils.opening_text))
+            
+    except Exception:
+        speak('Désolé, Je ne comprend pas. Pouvez vous repérer ?')
+        query = 'None'
+    
+    return query
 
 if __name__ == '__main__' :
-    auth_user()
+    # api.auth_user()
 
-    res = api_get('users')
-    print(res.text)
+    # greet_user()
+    # query = listen_to_user_input()
+    # print(query)
+    # speak(f'Votre requêtes est : {query}')
+    # speak('Voici le rapport d\'intrusions le plus à jour dans le réseau 192.168.8.0/24.')
+    # resp = api.post("api/system_call/", {'method':'get_intrusion_report'})
+    # print(resp.json()['message'])
+    # input()
+    while True:
+        message = input("")
+        intents = brain.class_predication(message.lower(), brain.words, brain.classes)
+        result = choice(brain.get_intent(intents, brain.data)["responses"])
+        print(result)
