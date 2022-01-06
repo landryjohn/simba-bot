@@ -96,7 +96,7 @@ if __name__ == '__main__' :
         query = listen_to_user_input()
         print("Utilisateur :", query)
         if query == "" : continue 
-        intents = brain.class_predication(query.lower(), brain.words, brain.classes)
+        intents = brain.class_prediction(query.lower(), brain.words, brain.classes)
         intent = brain.get_intent(intents, brain.data)
         print(intent)
         if intent["tag"] == 'grettings' : 

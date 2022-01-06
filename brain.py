@@ -195,7 +195,7 @@ def bag_of_words(text, vocab):
     return np.array(bow)
 
 
-def class_predication(text, vocab, labels):
+def class_prediction(text, vocab, labels):
     bow = bag_of_words(text, vocab)
     result = model.predict(np.array([bow]))[0]
     thresh = 0.2
@@ -220,6 +220,6 @@ if __name__ == '__main__' :
     print("Ready !")
     while True:
         message = input("")
-        intents = class_predication(message.lower(), words, classes)
+        intents = class_prediction(message.lower(), words, classes)
         result = random.choice(get_intent(intents, data)["responses"])
         print(result)
