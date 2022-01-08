@@ -6,6 +6,7 @@ from decouple import config
 from functions import api
 from datetime import datetime
 import brain
+import termcolor, pyfiglet 
 
 USERNAME = config('USER_NAME')
 BOTNAME = config('BOTNAME')
@@ -84,6 +85,8 @@ if __name__ == '__main__' :
         if count > 3 : 
             print("Echec de l'authentification")
             exit()
+    f = pyfiglet.Figlet(font='standard')
+    print(termcolor.colored(f.renderText('... SIMBA ...'), 'yellow'))
     print(f"Bienvenue dans votre sessions {config('USER_NAME')}")
     try :
         api.auth_user()

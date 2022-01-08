@@ -21,7 +21,6 @@ doc_X = []
 doc_y = []
 
 # Utilisation d'un dictionnaire pour représenter un fichier JSON d'intentions
-# Ensemble de intents du pro
 data = {
     "intents": [
         {
@@ -160,7 +159,7 @@ def train_model() -> None:
     output_shape = len(train_y[0])
     epochs = 200
 
-    # modèle Deep Learning
+    # Modèle Deep Learning de Simba
     model = Sequential()
     model.add(Dense(128, input_shape=input_shape, activation="relu"))
     model.add(Dropout(0.5))
@@ -172,7 +171,7 @@ def train_model() -> None:
                 optimizer=adam, metrics=["accuracy"])
 
     model.fit(x=train_X, y=train_y, epochs=200, verbose=1)
-
+    # sauvegarde du modèle
     model.save('simba_model.hdf5')
     # del model 
 """
