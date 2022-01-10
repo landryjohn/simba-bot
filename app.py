@@ -108,21 +108,28 @@ if __name__ == '__main__' :
         elif intent["tag"] == 'services_status' :
             say_random_answer(intent)
             # show_services_status
+            resp = api.post("api/system_call/", {'method':'show_services_status'})
+            print(resp.json()['message'])
         elif intent["tag"] == 'signature_database' : 
             say_random_answer(intent) 
             # get_signature_database
+            resp = api.post("api/system_call/", {'method':'get_signature_database'})
+            print(resp.json()['message'])
         elif intent["tag"] == 'simba_rules' :
-            say_random_answer(intent) 
+            say_random_answer(intent)
             # show_simba_rules
+            resp = api.post("api/system_call/", {'method':'show_simba_rules'})
+            print(resp.json()['message'])
         elif intent["tag"] == 'intrusion_report' : 
             say_random_answer(intent)  
             # get_intrusion_report
+            resp = api.post("api/system_call/", {'method':'get_intrusion_report'})
+            print(resp.json()['message'])
         elif intent["tag"] == 'send_intrusion_report' : 
             say_random_answer(intent)
             # get_intrusion_report 
         elif intent["tag"] == 'block_user_rule' : 
             say_random_answer(intent)
-              
         elif intent["tag"] == 'add_rule' : 
             say_random_answer(intent)  
         elif intent["tag"] == 'firewall' : 
