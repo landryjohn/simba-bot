@@ -1,3 +1,4 @@
+```python
 import string, random
 # Importation de la librairie Natural Language Tool Kit pour les traitements NLP sur le text 
 import nltk
@@ -248,3 +249,6 @@ if __name__ == '__main__' :
         intents = class_prediction(message.lower(), words, classes)
         result = random.choice(get_intent(intents, data)["responses"])
         print(result)
+
+```
+
