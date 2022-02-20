@@ -20,7 +20,7 @@ lemmatizer = WordNetLemmatizer()
 # Listes des features généré
 words = []
 
-# Liste des intentions 
+# Liste des intentions, actions , commandes dans le réseau télématique
 classes = []
 
 doc_X = []
@@ -175,11 +175,15 @@ def train_model() -> None:
     model.add(Dense(128, input_shape=input_shape, activation="relu"))
     model.add(Dropout(0.5))
     # Couche cachée L=1
+    # ReLU : Rectified Linear Unit , f(x) = max(0,x)
+    # C'est une fonction de redressement
     model.add(Dense(64, activation="relu"))
     model.add(Dropout(0.3))
     # Couche de sortie
+    # softmax(exponentielle normalisée) : 
+    # permet de générer une sortie probabiliste pour la classification
     model.add(Dense(output_shape, activation="softmax"))
-    # Ajout de la fonction d'optimisation Adam
+    # Ajout de la fonction d'optimisation Adam(Adaptive Moment Estimation)
     adam = tf.keras.optimizers.Adam(learning_rate=0.01, decay=1e-6)
 
     # Définition des paramètres pour la retropropagation
@@ -233,9 +237,9 @@ def class_prediction(text, vocab, labels):
     return return_list
 
 
-def get_intent(intents_list, json_intents):
+def get_intent(intents_list, dataset_json_intents):
     tag = intents_list[0]
-    list_of_intents = json_intents["intents"]
+    list_of_intents = dataset_json_intents["intents"]
     for intent in list_of_intents:
         if intent["tag"] == tag:
             break
@@ -244,6 +248,8 @@ def get_intent(intents_list, json_intents):
 # lancement de l'agent conversationnel pour le test
 if __name__ == '__main__' : 
     while True:
+        # TODO :  remove this line is production // break 
+        break ; 
         message = input("")
         intents = class_prediction(message.lower(), words, classes)
         result = random.choice(get_intent(intents, data)["responses"])

@@ -6,7 +6,7 @@ from decouple import config
 from functions import api
 from datetime import datetime
 import brain
-import termcolor, pyfiglet 
+import termcolor, pyfiglet
 
 USERNAME = config('USER_NAME')
 BOTNAME = config('BOTNAME')
@@ -101,7 +101,7 @@ if __name__ == '__main__' :
         if query == "" : continue 
         intents = brain.class_prediction(query.lower(), brain.words, brain.classes)
         intent = brain.get_intent(intents, brain.data)
-        # print(intent)
+        
         if intent["tag"] == 'grettings' : 
             say_random_answer(intent)
             speak("Comment puis-je vous aider ?")
