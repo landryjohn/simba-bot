@@ -248,8 +248,6 @@ def get_intent(intents_list, dataset_json_intents):
 # lancement de l'agent conversationnel pour le test
 if __name__ == '__main__' : 
     while True:
-        # TODO :  remove this line is production // break 
-        break ; 
         message = input("")
         intents = class_prediction(message.lower(), words, classes)
         result = random.choice(get_intent(intents, data)["responses"])
