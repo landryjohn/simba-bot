@@ -61,7 +61,7 @@ data = {
         {
             "tag": "simba_rules",
             "patterns": ["quelles sont le fichier des règles d'alerte", "quelles sont tes règles", "montre moi le fichier règles", 
-            "fichier de règle de simba", "affiche le fichier des règles", "fichier de règle"],
+            "fichier de règle de mdiai", "affiche le fichier des règles", "fichier de règle"],
             "responses": ["voici le contenu du fichier de règle personnalisé"]
         },
         {
@@ -139,7 +139,7 @@ classes = sorted(set(classes))
 
 """
 Une fois lancée, cette fonction permet de construire et d'entrainer le modèle.
-Le modèle issue est sauvegardé dans une fichier simba_model au format HDF5
+Le modèle issue est sauvegardé dans une fichier mdiai_model au format HDF5
 """
 def train_model() -> None:
     global model 
@@ -169,7 +169,7 @@ def train_model() -> None:
     output_shape = len(train_y[0])
     epochs = 200
 
-    # Modèle Deep Learning de Simba
+    # Modèle Deep Learning de MDIAI
     model = Sequential()
     # Couche d'entrée du réseau de neurones
     model.add(Dense(128, input_shape=input_shape, activation="relu"))
@@ -194,7 +194,7 @@ def train_model() -> None:
     model.fit(x=train_X, y=train_y, epochs=200, verbose=1)
 
     # sauvegarde du modèle
-    model.save('simba_model.hdf5')
+    model.save('mdiai_model.hdf5')
 
     # Affichage du bilan de l'entrainement
     print("***************************************")
@@ -204,7 +204,7 @@ def train_model() -> None:
     print("***************************************")
 
 # Chargement du modèle le plus à jour
-model = load_model('simba_model.hdf5')
+model = load_model('mdiai_model.hdf5')
 
 # fonction utilisée pour reformater l'entrée de l'utilisateur 
 # en utilisant un tokeniseur et le lemmatiseur

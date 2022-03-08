@@ -1,6 +1,6 @@
 import requests, pyttsx3, speech_recognition as sr
 
-import utils, os
+import utils, os, platform
 from random import choice
 from decouple import config
 from functions import api
@@ -10,9 +10,10 @@ import termcolor, pyfiglet
 
 USERNAME = config('USER_NAME')
 BOTNAME = config('BOTNAME')
+TTS_DRIVER = 'sapi5' if 'windows' in platform.system().lower() else 'espeak'
 
 # set the TTS engine
-engine = pyttsx3.init('sapi5')
+engine = pyttsx3.init(TTS_DRIVER)
 
 # Set the rate of the assistant
 engine.setProperty('rate', 170)
@@ -31,8 +32,10 @@ api.BASE_URL = config('BASE_URL')
 def speak(text:str) -> None :
     """Write the text passed in parameter"""
     print(f"🤖 {BOTNAME} parle...")
-    engine.say(text)
-    engine.runAndWait()
+    # TODO : Adapt this to tts process 
+    print(f"{BOTNAME} : {text}")
+    # engine.say(text)
+    # engine.runAndWait()
 
 def greet_user() -> None:
     """Greets the user according to the time"""
@@ -49,14 +52,18 @@ def greet_user() -> None:
 def listen_to_user_input() -> str : 
     """Listen to user, make STT conversion using SAPI5"""
     r = sr.Recognizer()
-    with sr.Microphone() as source:
-        print('👂 En écoute...')
-        r.pause_threshold = 2
-        audio = r.listen(source)
+    # TODO : Addapt this to STT process 
+    # with sr.Microphone(device_index=2) as source:
+    #     print('\n\n\n\n\n👂 En écoute...')
+    #     r.adjust_for_ambient_noise(source)
+    #     r.pause_threshold = 2
+    #     audio = r.listen(source)
 
     try:
         print('🤖 Traitement...')
-        query = r.recognize_google(audio, language='fr-FR')
+        # TODO : change how user input query from manuel to STT
+        # query = r.recognize_google(audio, language='fr-FR')
+        query = input(">>> Saisir votre requête : ")
         if any([el in query for el in ['arrêter', 'sortir', 'arrêt', 'fin', 'terminer']]):
             speak('Au revoir')
             exit()
@@ -86,8 +93,8 @@ if __name__ == '__main__' :
             print("Echec de l'authentification")
             exit()
     f = pyfiglet.Figlet(font='standard')
-    print(termcolor.colored(f.renderText('... SIMBA ...'), 'yellow'))
-    print(f"Bienvenue dans votre sessions {config('USER_NAME')}")
+    print(termcolor.colored(f.renderText('... MDIAI ...'), 'yellow'))
+    print(f"Bienvenue dans votre session {config('USER_NAME')}")
     try :
         api.auth_user()
     except Exception as error:
